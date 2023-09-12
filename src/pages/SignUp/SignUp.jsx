@@ -1,11 +1,13 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../provider/AuthProvider";
 import { updateProfile } from "firebase/auth";
 import toast, { Toaster } from "react-hot-toast";
+import { FaGoogle } from "react-icons/fa";
 
 const SignUp = () => {
-  const { createUser } = useContext(AuthContext);
+  const { createUser, googleSignIn } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const handleSignUp = (event) => {
     event.preventDefault();
@@ -34,6 +36,21 @@ const SignUp = () => {
         .then(() => {})
         .catch(() => {});
     };
+  };
+
+  const handleGoogleSignin = (event) => {
+    event.preventDefault();
+
+    googleSignIn()
+      .then((result) => {
+        const user = result.user;
+        console.log(user);
+        toast.success("Sign Up Success");
+        navigate("/");
+      })
+      .catch(() => {
+        toast.error("Sign Up Failed");
+      });
   };
   return (
     <section className="bg-gray-50 dark:bg-gray-900">
@@ -139,6 +156,11 @@ const SignUp = () => {
                 </Link>
               </p>
             </form>
+            <div className="text-3xl flex justify-center">
+              <button onClick={handleGoogleSignin}>
+                <FaGoogle></FaGoogle>
+              </button>
+            </div>
             <Toaster></Toaster>
           </div>
         </div>

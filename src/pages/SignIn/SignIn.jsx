@@ -1,10 +1,11 @@
 import { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../provider/AuthProvider";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
+import { FaGoogle } from "react-icons/fa";
 
 const SignIn = () => {
-    const {signInUser} = useContext(AuthContext);
+    const {signInUser, googleSignIn} = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleSignIn = (event) => {
@@ -17,13 +18,28 @@ const SignIn = () => {
     signInUser(email, password)
     .then(result => {
         const user = result.user;
-        toast.success("Sign In Success");
+        toast.success("Sign in successfully");
         form.reset();
-        navigate("/");
+        setTimeout(() => {navigate("/");}, 1000)
     })
     .catch(() => {
         toast.error("Sign In Failed");
     })
+    }
+
+    const handleGoogleSignin = (event) => {
+        event.preventDefault();
+
+        googleSignIn()
+        .then(result => {
+            const user = result.user;
+            console.log(user);
+            toast.success("Sign In Success");
+            navigate('/');
+        })
+        .catch(() => {
+            toast.error("Sign In Failed");
+        })
     }
     return (
         <div className="bg-gray-50 dark:bg-gray-900">
@@ -61,6 +77,10 @@ const SignIn = () => {
                       Don’t have an account yet? <Link to="/signUp" className="font-medium text-primary-600 hover:underline dark:text-primary-500">Sign up</Link>
                   </p>
               </form>
+              <div className="text-3xl flex justify-center">
+                <button onClick={handleGoogleSignin}><FaGoogle></FaGoogle></button>
+              </div>
+                <Toaster></Toaster>
           </div>
       </div>
   </div>
